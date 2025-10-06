@@ -1,0 +1,155 @@
+<template>
+  <div class="page" @swipe="toHomePage">
+    <text class="time">{{ time }}</text>
+    <scroll class="column box center" scroll-y="true" bounces="true">
+      <div class="item1"></div>
+
+      <div class="description footer column center">
+        <text class="b">{{ poem }}</text>
+      </div>
+    </scroll>
+    <image class="back" src="/common/icon/back.png" onclick="back"></image>
+  </div>
+</template>
+
+<script>
+import router from "@system.router";
+import app from "@system.app";
+import data1 from "../../common/data/data1.js";
+import data2 from "../../common/data/data2.js";
+import data3 from "../../common/data/data3.js";
+import data4 from "../../common/data/data4.js";
+
+export default {
+  private: {
+    title: "示例页面",
+    time: "00:00",
+    poem: "",
+    text: "古诗"
+  },
+  onInit() {
+    // 合并所有数据
+    const allData = {
+      ...data1,
+      ...data2,
+      ...data3,
+      ...data4
+    };
+    
+    // 根据传入的参数设置对应的单词内容
+    this.poem = allData[this.text] || "未找到对应的单词数据";
+    
+    const updateTime = () => {
+      const date = new Date();
+      const hour = date.getHours().toString().padStart(2, "0");
+      const minute = date.getMinutes().toString().padStart(2, "0");
+      this.time = hour + ":" + minute;
+    };
+    updateTime();
+    this.timer = setInterval(updateTime, 60000);
+  },
+  onDestroy() {
+    clearInterval(this.timer);
+  },
+
+  navigateToPage(name) {
+    router.push({
+      uri: "/pages/detail",
+      params: {
+        text: name
+      }
+    });
+  },
+  toHomePage(eve) {
+    if (eve.direction === "right") {
+      router.back();
+    }
+  },
+  back() {
+    router.back();
+  }
+}
+</script>
+
+<style>
+/* 样式保持不变 */
+.item1 {
+  height: 60px;
+  margin-top: 15px;
+  margin-bottom: 15px;
+  border-radius: 20px;
+}
+
+.column {
+  flex-direction: column;
+}
+
+.center {
+  align-items: center;
+}
+
+.page {
+  align-items: center;
+  justify-content: center;
+  background-color: #000000;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  position: absolute;
+  width: 100%;
+}
+
+.name {
+  color: white;
+}
+
+.time {
+  position: absolute;
+  top: 20px;
+  left: 70px;
+  z-index: 20;
+  width: 200px;
+  height: 50px;
+  background: rgba(0, 0, 0, 0.7);
+  font-size: 42px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.5);
+  text-align: center;
+  line-height: 50px;
+  border-radius: 12px;
+}
+
+.box {
+  width: 100%;
+  flex: 1;
+}
+
+.back {
+  position: absolute;
+  left: 60px;
+  top: 12px;
+  width: 72px;
+  height: 72px;
+  opacity: 0.5;
+}
+
+.description {
+  position: relative;
+  z-index: 1;
+  top: 0px;
+  border: 3px solid rgba(255, 255, 255, 0.06);
+  border-radius: 36px;
+  background-color: rgba(255, 255, 255, 0.2);
+  color: #fff;
+  padding: 30px;
+  font-size: 14px;
+  margin: 0 auto;
+}
+
+.b {
+  font-size: 28px;
+  color: #ffffff;
+  line-height: 40px;
+}
+</style>

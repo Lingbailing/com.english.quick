@@ -1,0 +1,224 @@
+<template>
+  <div class="page download-page" @swipe="toHomePage">
+    <div class="header column center">
+      <text class="title"></text>
+    </div>
+    <scroll class="column box" scroll-y="true" bounces="true">
+      <div class="header column center">
+        <text class="b">简要介绍</text>
+      </div>
+
+      <div class="description footer column center">
+        <text class="d">这是一个有高考必背英语688个单词的快应用</text>
+        <text class="d">祝大家高考必胜</text>
+        <text class="d">别在考试时用！！！</text>
+        <text class="d">感谢@Dreamqiu</text>
+        <text class="d">二次开发:LingBailing</text>
+      </div>
+    </scroll>
+    <image class="cover" src="/common/icon/cover.png"></image>
+
+    <image class="back" src="/common/icon/back.png" onclick="back"></image>
+    <div class="outicon2">
+        <image 
+          class="click-image" 
+          src="/common/icon/something.png" 
+          @click="handleClickWithFeedback">
+        </image>
+        <!-- <text class="progress-text">{{clickCount}}/10</text>
+        <progress class="progress-bar" value="{{clickCount}}" max="10"></progress> -->
+    </div>
+  </div>
+</template>
+
+<style>
+.cover {
+  position: absolute;
+  left: 0px;
+  top:0px;
+  width: 336px;
+  height: 102px;
+  opacity: 1;
+}
+.box {
+  width: 100%;
+  flex: 1;
+}
+
+.qrcode {
+  width: 260px;
+  height: 260px;
+}
+
+.qr {
+  border-radius: 36px;
+  background: rgba(255, 255, 255, 1);
+}
+
+.back {
+  position: absolute;
+  left: 120px;
+  top: 12px;
+  width: 72px;
+  height: 72px;
+  opacity: 0.5;
+}
+
+.description {
+  top: 0px;
+  border: 3px solid rgba(255, 255, 255, 0.06);
+  border-radius: 36px;
+  background-color: rgba(255, 255, 255, 0.2);
+  color: #fff;
+  padding: 10px;
+  font-size: 14px;
+  margin: 0 auto;
+}
+
+.icon {
+  width: 100%;
+  flex: 50%;
+}
+
+.download-page {
+  flex-direction: column;
+  height: 100%;
+  position: absolute;
+  width: 100%;
+}
+
+text {
+  color: #ffffff;
+}
+
+.column {
+  flex-direction: column;
+}
+
+.row {
+  flex-direction: row;
+}
+
+.info {
+  width: 272px;
+  margin-top: 0px;
+}
+
+.center {
+  align-items: center;
+  justify-content: center;
+}
+
+.page {
+  flex: 1;
+  background-color: #000000;
+  width: 336px;
+  height: 480px;
+}
+
+.footer {
+  margin-top: 10px;
+}
+
+.b {
+  font-size: 64px;
+  color: #ffffff;
+}
+
+.d {
+  font-size: 25px;
+  color: #c5c5c5;
+  margin-top: 10px;
+}
+
+.outicon2 {
+  position: absolute;
+  top: 465px;
+  right: 0px;
+}
+
+/* 新增样式 */
+.progress-text {
+  font-size: 20px;
+  color: #ffffff;
+  text-align: center;
+  margin-top: 5px;
+}
+
+.progress-bar {
+  width: 200px;
+  height: 10px;
+  margin-top: 5px;
+}
+
+.click-image {
+  left: 0px;
+  top: 0px;
+  width: 324px;
+  height: 194px;
+  opacity: 1;
+  border-radius: 36px;
+  background: rgba(38, 38, 38, 1);
+  border: 3px solid rgba(255, 255, 255, 0.06);
+}
+</style>
+
+<script>
+import router from "@system.router"
+
+export default {
+  private: {
+    clickCount: 0,
+    clickTimer: null,
+    lastClickTime: 0
+  },
+  
+  toHomePage(eve) {
+    if (eve.direction === "right") {
+      router.replace({
+        uri: "/pages/index"
+      })
+    }
+  },
+  
+  back() {
+    router.replace({
+      uri: "/pages/index"
+    })
+  },
+  
+  handleClickWithFeedback() {
+    const currentTime = new Date().getTime();
+    
+    // 如果两次点击间隔超过1秒，重置计数
+    if (currentTime - this.lastClickTime > 1000) {
+      this.clickCount = 0;
+    }
+    
+    this.lastClickTime = currentTime;
+    this.clickCount++;
+    
+    console.log(`点击次数: ${this.clickCount}`); // 添加日志查看点击次数
+    
+    // 如果达到10次点击，跳转到彩蛋页面
+    if (this.clickCount >= 10) {
+      console.log("达到10次点击，跳转到彩蛋页面"); // 添加日志
+      
+      // 重置计数
+      this.clickCount = 0;
+      
+      // 跳转到彩蛋页面
+      router.push({
+        uri: "/pages/coloregg"
+      });
+    }
+  },
+  
+  onDestroy() {
+    // 组件销毁时清除计时器
+    if (this.clickTimer) {
+      clearTimeout(this.clickTimer);
+    }
+  }
+}
+</script>
